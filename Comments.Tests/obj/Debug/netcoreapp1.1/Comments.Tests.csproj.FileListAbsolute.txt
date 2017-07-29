@@ -1,0 +1,14 @@
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\xunit.runner.utility.netstandard15.dll
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\xunit.runner.reporters.netstandard15.dll
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.Tests.deps.json
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.Tests.runtimeconfig.json
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.Tests.runtimeconfig.dev.json
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.Tests.dll
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\obj\Debug\netcoreapp1.1\Comments.Tests.csprojResolveAssemblyReference.cache
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\obj\Debug\netcoreapp1.1\Comments.Tests.AssemblyInfo.cs
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.Tests.pdb
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.dll
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\bin\Debug\netcoreapp1.1\Comments.pdb
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\obj\Debug\netcoreapp1.1\Comments.Tests.dll
+C:\Code\GitHub\stanac\Comments\Comments\Comments.Tests\obj\Debug\netcoreapp1.1\Comments.Tests.pdb
