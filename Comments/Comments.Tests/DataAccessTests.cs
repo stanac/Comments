@@ -92,7 +92,7 @@ namespace Comments.Tests
 
         private void TryDelete(string file, int tryCount = 0)
         {
-            if (tryCount > 4) throw new Exception("Failed to delete file");
+            if (tryCount > 2) throw new Exception("Failed to delete file");
             Thread.Sleep(tryCount * 1000);
             try
             {
