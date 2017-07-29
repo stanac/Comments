@@ -1,7 +1,0 @@
-C:\Code\GitHub\stanac\Comments\Comments\Comments\bin\Debug\netcoreapp1.1\Comments.deps.json
-C:\Code\GitHub\stanac\Comments\Comments\Comments\bin\Debug\netcoreapp1.1\Comments.dll
-C:\Code\GitHub\stanac\Comments\Comments\Comments\obj\Debug\netcoreapp1.1\Comments.csprojResolveAssemblyReference.cache
-C:\Code\GitHub\stanac\Comments\Comments\Comments\obj\Debug\netcoreapp1.1\Comments.AssemblyInfo.cs
-C:\Code\GitHub\stanac\Comments\Comments\Comments\bin\Debug\netcoreapp1.1\Comments.pdb
-C:\Code\GitHub\stanac\Comments\Comments\Comments\obj\Debug\netcoreapp1.1\Comments.dll
-C:\Code\GitHub\stanac\Comments\Comments\Comments\obj\Debug\netcoreapp1.1\Comments.pdb
