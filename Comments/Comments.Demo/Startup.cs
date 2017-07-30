@@ -28,6 +28,9 @@ namespace Comments.Demo
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseComments();
 
             app.Run(async (context) =>

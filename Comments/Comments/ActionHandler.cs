@@ -11,7 +11,7 @@ namespace Comments
         public string RequestUrl { get; set; }
         public string RequestMethod { get; set; }
         public Func<HttpContext, Task> HandleRequest { get; set; }
-        public bool ShouldHandleRequest(HttpRequest request)
+        public virtual bool ShouldHandleRequest(HttpRequest request)
         {
             return request.Path.ToString().ToLower() == RequestUrl.ToLower() && request.Method.ToLower() == RequestMethod.ToLower();
         }

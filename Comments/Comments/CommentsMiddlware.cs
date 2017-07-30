@@ -48,6 +48,19 @@ namespace Comments
                 .GetActionHandler();
             yield return new GetCommentsActionHandlerFactory(_dataAccessFact, _options)
                 .GetActionHandler();
+            List<string> knownAssets = new List<string>
+            {
+                "/loader.js",
+                "/comments.js"
+            };
+            yield return new AssetLoadingActionHandlerFactory(_dataAccessFact, _options, knownAssets)
+                .GetActionHandler();
+            yield return new IsUserCommentModActionHandlerFactory(_dataAccessFact, _options)
+                .GetActionHandler();
+            yield return new DeleteCommentActionHandlerFactory(_dataAccessFact, _options)
+                .GetActionHandler();
+            yield return new PreviewMarkdownActionHandlerFactory(_dataAccessFact, _options)
+                .GetActionHandler();
         }
     }
 }

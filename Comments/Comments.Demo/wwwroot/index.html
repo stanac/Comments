@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>index</title>
+    <style type="text/css">
+        body {
+            background-color: #c3c3c3;
+            color: #3c3c3c;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            width: 650px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Comments as a middleware for ASP.NET Core</h2>
+    <p>
+        <h3>How to?</h3>
+        <ol>
+            <li>Install nuget package: Comments</li>
+            <li>Add app.UseComments(); in Startup.cs</li>
+            <li>On page where you would like to add comments add <br/>&lt;div&gt; id="comments-middleware"&lt;div&gt;</li>
+            <li>On the bottom of the body of the page where you would like to add comments add <br/> &lt;script src="/comments-middleware/loader.js"&gt;&lt;/script&gt;</li>
+            <li>Visit <a href="https://github.com/stanac/Comments">GitHub</a> for configuration, how to's and more info in general.</li>
+            <li>Or try posting a comment below to see how it works</li>
+        </ol>
+    </p>
+    <div id="comments-middleware"></div>
+    <script src="/comments-middleware/loader.js"></script>
+</body>
+</html>

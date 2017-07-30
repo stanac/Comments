@@ -5,6 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\comments.js" />
+    <None Remove="Assets\loader.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\comments.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\loader.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Actions\PostCommentActionHandlerFactory.cs" />
   </ItemGroup>
 
