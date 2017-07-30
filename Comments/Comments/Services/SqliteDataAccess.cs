@@ -13,7 +13,7 @@ namespace Comments.Services
 
         public SqliteDataAccess(): this("comments.sqlite") { }
 
-        public SqliteDataAccess(string filePath): this(new SqliteConnection($"Data Source={filePath};Version=3;")) { }
+        public SqliteDataAccess(string filePath): this(new SqliteConnection($"Data Source={filePath};")) { }
 
         public SqliteDataAccess(IDbConnection connection)
         {
@@ -29,7 +29,7 @@ namespace Comments.Services
             var param = cmd.CreateParameter();
             cmd.AddParamWithValue("$pageUrl", pageUrl);
             var models = ReadCommentModels(cmd).ToArray();
-            
+            cmd.Dispose();
             _connection.Close();
             return models;
         }
@@ -45,18 +45,37 @@ namespace Comments.Services
             cmd.Parameters.Add(param);
             if (_connection.State != ConnectionState.Open) _connection.Open();
             object result = cmd.ExecuteScalar();
+            cmd.Dispose();
             _connection.Close();
             return (int)(long)result;
         }
 
-        public void DeleteComment(Guid staticId, string reasonForDeleting)
+        public CommentModel DeleteComment(Guid staticId, string reasonForDeleting)
         {
-            string sql = $"UPDATE Comment SET Deleted = 1, CommentContentRendered = 'Comment is deleted' WHERE StaticId = '{staticId.ToString("N")}';";
+            // TODO: get deleted comment content from CommentsOptions
+            string staticIdValue = staticId.ToString("N");
+
+            string sql = $"UPDATE Comment SET Deleted = 1, CommentContentRendered = 'Comment is deleted', ReasonForDeleting = $reason WHERE StaticId = '{staticIdValue}';";
             var cmd = _connection.CreateCommand();
             cmd.CommandText = sql;
+            cmd.AddParamWithValue("$reason", reasonForDeleting);
             if (_connection.State != ConnectionState.Open) _connection.Open();
             cmd.ExecuteNonQuery();
+            cmd.Dispose();
+            
+            string sqlRead = $"SELECT * FROM Comment WHERE StaticId = '{staticIdValue}';";
+            var readCmd = _connection.CreateCommand();
+            cmd.CommandText = sqlRead;
+            var models = ReadCommentModels(cmd).ToArray();
+            cmd.Dispose();
+
             _connection.Close();
+
+            if (models.Length != 1)
+            {
+                throw new Exception($"Failed to get comment with id: '{staticIdValue}' after deleting");
+            }
+            return models[0];
         }
 
         public CommentModel PostComment(CommentModel model)
@@ -113,6 +132,7 @@ namespace Comments.Services
             var readCmd = _connection.CreateCommand();
             cmd.CommandText = sqlRead;
             var models = ReadCommentModels(cmd).ToArray();
+            cmd.Dispose();
 
             _connection.Close();
 
@@ -163,6 +183,7 @@ namespace Comments.Services
             if (_connection.State != ConnectionState.Open) _connection.Open();
             cmd.ExecuteNonQuery();
             _connection.Close();
+            cmd.Dispose();
         }
 
         private string NormalizeUrl(string url)

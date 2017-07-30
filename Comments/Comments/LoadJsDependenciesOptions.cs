@@ -1,6 +1,6 @@
 ﻿namespace Comments
 {
-    public enum LoadJsDependencyOptions
+    public enum LoadJsDependenciesOptions
     {
         AutoDetect,
         Yes,

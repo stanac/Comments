@@ -60,6 +60,11 @@ namespace Comments.Tests
                 AssertModels(model, comments[0]);
                 AssertModels(model2, comments[1]);
 
+                var deletedComment = dataAccess.DeleteComment(comments[0].StaticId, "-");
+                Assert.True(deletedComment.Deleted);
+                Assert.Equal("-", deletedComment.ReasonForDeleting);
+                Assert.Equal("Comment is deleted", deletedComment.CommentContentRendered);
+
                 dataAccess.Dispose();
             }
             TryDelete(file);
