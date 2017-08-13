@@ -18,5 +18,12 @@ namespace Comments
         public Func<HttpContext, bool> IsUserAdminModeratorCheck { get; set; } =
             ctx => ctx.User.Identity.IsAuthenticated && ctx.User.IsInRole("commentsmod");
         // public string DeletedCommentContent { get; set; } = "Comment is deleted by a moderator";
+        public bool RequireCommentApproval { get; set; } = false;
+        public bool DebugMode { get; set; }
+#if DEBUG
+            = true;
+#else
+            = false;
+#endif
     }
 }

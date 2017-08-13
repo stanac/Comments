@@ -9,6 +9,7 @@ namespace Comments.Contracts
         int GetCommentsCount(string pageUrl);
         CommentModel PostComment(CommentModel model);
         CommentModel DeleteComment(Guid staticId, string reasonForDeleting);
+        CommentModel ApproveComment(Guid staticId);
         void Initialize();
     }
 }

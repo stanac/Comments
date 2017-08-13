@@ -41,6 +41,11 @@ namespace Comments.Actions
                     await ctx.Response.WriteResponse($"Comment has exceeded maximum length of {_options.CommentSourceMaxLength} characters.", "text/plain", 400);
                     return;
                 }
+                comment.Approved = !_options.RequireCommentApproval;
+                if (!comment.Approved)
+                {
+                    comment.Approved = _options.IsUserAdminModeratorCheck(ctx); // admins don't require approval for comment
+                }
                 comment.PostedByMod = _options.IsUserAdminModeratorCheck(ctx);
                 comment.CommentContentRendered = Markdown.ToHtml(comment.CommentContentSource);
                 CommentModel response = null;

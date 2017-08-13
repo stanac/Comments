@@ -64,7 +64,7 @@ namespace Comments.Actions
         private string GetResource(string assetName)
         {
             assetName = assetName.TrimStart('/');
-            assetName = "." + assetName;
+            assetName = "." + assetName.ToLower();
             var resourceName = _resourceNames.Single(x => x.EndsWith(assetName, StringComparison.Ordinal));
             if (!_assets.ContainsKey(resourceName))
             {
@@ -72,7 +72,8 @@ namespace Comments.Actions
                 using (TextReader reader = new StreamReader(s))
                 {
                     string resource = reader.ReadToEnd();
-                    resource = SetLoaderSettings(resource);
+                    if (assetName == ".loader.js") resource = SetLoaderSettings(resource);
+                    else if (assetName == ".comments.js") resource = SetCommentsSettings(resource);
                     _assets[resourceName] = resource;
                     return resource;
                 }
@@ -80,21 +81,23 @@ namespace Comments.Actions
             return _assets[resourceName];
         }
 
+        private string SetCommentsSettings(string resource)
+        {
+            string oldValue = "var baseUrl = '/comments-middleware'; // replace this";
+            string newValue = $"var baseUrl = '{_options.BaseUrl}';";
+            return resource.Replace(oldValue, newValue);
+        }
+
         private string SetLoaderSettings(string loader)
         {
             Func<LoadJsDependenciesOptions, string> formatJsDependencyOptions =
-                options =>
-                {
-                    switch (options)
-                    {
-                        case LoadJsDependenciesOptions.AutoDetect:
-                            return "auto";
-                        default:
-                            return options.ToString().ToLower();
-                    }
-                };
-            string oldSettings = "var options = { loadJs: 'auto', middlewareRoot: '/comments-middleware' };";
-            string newSettings = $"var options = {{ loadJs: '{formatJsDependencyOptions(_options.LoadJsDependencies)}', middlewareRoot: '{_options.BaseUrl}' }};";
+                option => option == LoadJsDependenciesOptions.AutoDetect ? "auto" : option.ToString().ToLower();
+
+            string loadCss = _options.LoadCss.ToString().ToLower();
+            string loadMinified = (!_options.DebugMode).ToString().ToLower();
+            string oldSettings = "var options = { loadJs: 'auto', middlewareRoot: '/comments-middleware', loadMinified: true, loadCss: true }; // replace this";
+            string newSettings = $"var options = {{ loadJs: '{formatJsDependencyOptions(_options.LoadJsDependencies)}', middlewareRoot: "
+                + $"'{_options.BaseUrl}', loadMinified: {loadMinified}, loadCss: {loadCss} }};";
             loader = loader.Replace(oldSettings, newSettings);
             return loader;
         }

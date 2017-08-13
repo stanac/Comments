@@ -63,19 +63,9 @@ namespace Comments.Services
             cmd.ExecuteNonQuery();
             cmd.Dispose();
             
-            string sqlRead = $"SELECT * FROM Comment WHERE StaticId = '{staticIdValue}';";
-            var readCmd = _connection.CreateCommand();
-            cmd.CommandText = sqlRead;
-            var models = ReadCommentModels(cmd).ToArray();
-            cmd.Dispose();
-
             _connection.Close();
 
-            if (models.Length != 1)
-            {
-                throw new Exception($"Failed to get comment with id: '{staticIdValue}' after deleting");
-            }
-            return models[0];
+            return SelectCommentByStaticId(staticId);
         }
 
         public CommentModel PostComment(CommentModel model)
@@ -97,7 +87,8 @@ namespace Comments.Services
                     ReasonForDeleting,
                     PostedByMod,
                     StaticId,
-                    CommentHistory )
+                    CommentHistory,
+                    Approved )
                 VALUES (
                     $PageUrl,
                     {(model.ReplayToCommentId.HasValue ? model.ReplayToCommentId.ToString() : "NULL")},
@@ -111,7 +102,8 @@ namespace Comments.Services
                     $ReasonForDeleting,
                     {(model.PostedByMod ? 1 : 0)},
                     '{staticId}',
-                    $CommentHistory )
+                    $CommentHistory,
+                    {(model.Approved ? 1 : 0)} )
                     ;
                 ";
 
@@ -128,20 +120,26 @@ namespace Comments.Services
             if (_connection.State != ConnectionState.Open) _connection.Open();
             cmd.ExecuteNonQuery();
 
-            string sqlRead = $"SELECT * FROM Comment WHERE StaticId = '{staticId}';";
-            var readCmd = _connection.CreateCommand();
-            cmd.CommandText = sqlRead;
-            var models = ReadCommentModels(cmd).ToArray();
             cmd.Dispose();
 
             _connection.Close();
 
-            if (models.Count() != 1)
-            {
-                throw new Exception("failed to read inserted model");
-            }
+            return SelectCommentByStaticId(model.StaticId);
+        }
 
-            return models.First();
+        public CommentModel ApproveComment(Guid staticId)
+        {
+            // TODO: get deleted comment content from CommentsOptions
+            string staticIdValue = staticId.ToString("N");
+
+            string sql = $"UPDATE Comment SET Approved = 1 WHERE StaticId = '{staticIdValue}';";
+            var cmd = _connection.CreateCommand();
+            cmd.CommandText = sql;
+            if (_connection.State != ConnectionState.Open) _connection.Open();
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+
+            return SelectCommentByStaticId(staticId);
         }
 
         public void Dispose()
@@ -170,7 +168,8 @@ namespace Comments.Services
                     ReasonForDeleting TEXT,
                     PostedByMod BIT NOT NULL,
                     CommentHistory TEXT NULL,
-                    StaticId TEXT NOT NULL UNIQUE
+                    StaticId TEXT NOT NULL UNIQUE,
+                    Approved BIT NOT NULL
                 );
 
                 CREATE INDEX IF NOT EXISTS IX_Comment_PageUrl ON Comment(PageUrl);
@@ -229,7 +228,30 @@ namespace Comments.Services
                 r.Dispose();
             }
         }
+
+        private CommentModel SelectCommentByStaticId(Guid staticId, bool returnContentSource = false)
+        {
+            string staticIdValue = staticId.ToString("N");
+            string sqlRead = $"SELECT * FROM Comment WHERE StaticId = '{staticIdValue}';";
+            var readCmd = _connection.CreateCommand();
+            readCmd.CommandText = sqlRead;
+            var models = ReadCommentModels(readCmd).ToArray();
+            readCmd.Dispose();
+
+            _connection.Close();
+
+            if (models.Length != 1)
+            {
+                throw new Exception($"Failed to get comment with id: '{staticIdValue}' after deleting");
+            }
+            if (!returnContentSource)
+            {
+                models[0].CommentContentSource = null;
+            }
+            return models[0];
+        }
         
         private string DateTimeToString(DateTime dt) => dt.ToString("yyyy-MM-dd HH:mm:ss");
+
     }
 }

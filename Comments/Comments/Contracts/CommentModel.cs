@@ -13,6 +13,7 @@ namespace Comments.Contracts
         public string CommentContentSource { get; set; }
         public string CommentContentRendered { get; set; }
         public DateTime PostTime { get; set; }
+        public bool Approved { get; set; }
         public bool Deleted { get; set; }
         public bool PostedByMod { get; set; }
         public string ReasonForDeleting { get; set; }

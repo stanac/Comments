@@ -25,7 +25,7 @@ namespace Comments.Actions
             return new ActionHandler
             {
                 RequestMethod = "post",
-                RequestUrl = _options.BaseUrl.NormalizePath(),
+                RequestUrl = (_options.BaseUrl + "/preview").NormalizePath(),
                 HandleRequest = HandleRequest
             };
         }

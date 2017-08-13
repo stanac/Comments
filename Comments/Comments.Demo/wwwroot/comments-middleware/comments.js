@@ -21,7 +21,7 @@
                 if (xhr.readyState > 3 && xhr.status >= 200 && xhr.status < 300) { success(xhr.responseText); }
             };
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.send(params);
+            xhr.send(data);
             return xhr;
         };
     })();
@@ -37,6 +37,11 @@
         self.getView = function (callback) {
             url = baseUrl + '/view.html';
             ajaxHelper.get(url, callback);
+        };
+
+        self.preview = function (markdown, callback) {
+            url = baseUrl + '/preview';
+            ajaxHelper.post(url, markdown, callback);
         };
 
     })(ajaxHelper);
@@ -60,9 +65,24 @@
         self.previewVisible = ko.observable(false);
         self.source = ko.observable("");
         self.rendered = ko.observable("");
+        self.charsLeft = ko.observable(500);
+
+        self.togglePreview = function () {
+            var isPreview = self.previewVisible();
+            if (isPreview) {
+                self.previewVisible(false);
+            } else {
+                self.loading(true);
+                ajax.preview(self.source(), function (rendered) {
+                    self.rendered(rendered)
+                    self.previewVisible(true);
+                    self.loading(false);
+                });
+            }
+        }
 
         function validateNewComment() {
-            return true;
+            return false;
         }
 
         self.doPost = function () {
@@ -76,6 +96,7 @@
         var div = document.getElementById('comments-middleware');
         ajax.getView(function (result) {
             div.innerHTML = result;
+            ko.applyBindings(new ViewModel(), div);
         });
     }
 

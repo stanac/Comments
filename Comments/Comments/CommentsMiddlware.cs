@@ -51,7 +51,9 @@ namespace Comments
             List<string> knownAssets = new List<string>
             {
                 "/loader.js",
-                "/comments.js"
+                "/comments.js",
+                "/comments.min.js",
+                "/view.html"
             };
             yield return new AssetLoadingActionHandlerFactory(_dataAccessFact, _options, knownAssets)
                 .GetActionHandler();

@@ -112,7 +112,8 @@ namespace Comments.Tests
         private void AssertModels(CommentModel m1, CommentModel m2)
         {
             Assert.Equal(m1.CommentContentRendered, m2.CommentContentRendered);
-            Assert.Equal(m1.CommentContentSource, m2.CommentContentSource);
+            if (m2.CommentContentSource != null)
+                Assert.Equal(m1.CommentContentSource, m2.CommentContentSource);
             Assert.Equal(m1.CommentHistory, m2.CommentHistory);
             Assert.Equal(m1.Deleted, m2.Deleted);
             Assert.Equal(m1.PageUrl, m2.PageUrl);

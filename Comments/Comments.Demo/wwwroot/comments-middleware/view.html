@@ -1,0 +1,31 @@
+﻿<div id="comments-middleware-view">
+    <h4>Comments</h4>
+    <div class="post-comment">
+        <label>Post comment</label><br/>
+        <input type="text" placeholder="Name" /><br />
+        <input type="email" placeholder="Email (will use gravatar)" /><br />
+        <div data-bind="visible: !loading()">
+            <textarea placeholder="comment" data-bind="visible: !previewVisible(), value: source, valueUpdate: 'keyUp'"></textarea><br />
+            <div data-bind="visible: previewVisible(), html: rendered" class="comment-preview"></div>
+        </div>
+        <div data-bind="visible: loading()">
+            <p>Loading...</p>
+        </div>
+    </div>
+    <div class="comments-footer">
+        <div style="float:left">
+            <p class="comment-description">
+                You can use <a href="http://spec.commonmark.org/0.27/" target="_blank">markdown</a> to style your comment.
+            </p>
+            <p class="comment-description">
+                You have <span data-bind="text: charsLeft"></span> characters left
+            </p>
+        </div>
+        <div style="float:right">
+            <button data-bind="click: togglePreview, visible: previewVisible()">Edit</button>
+            <button style="cursor: help;" data-bind="click: togglePreview, visible: !previewVisible()">Preview</button>
+            <button>Post</button>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+</div>

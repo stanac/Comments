@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,9 +32,20 @@ namespace Comments
 
         public static string ReadBodyAsString(this HttpRequest request)
         {
-            byte[] data = new byte[(int)request.Body.Length];
-            request.Body.Read(data, 0, data.Length);
-            return Encoding.UTF8.GetString(data);
+            byte[] data = new byte[1024];
+            byte[] wholeBody = null;
+            using (Stream s = new MemoryStream())
+            {
+                int read = 0;
+                while ((read = request.Body.Read(data, 0, data.Length)) > 0)
+                {
+                    s.Write(data, 0, read);
+                }
+                s.Position = 0;
+                wholeBody = new byte[s.Length];
+                s.Read(wholeBody, 0, wholeBody.Length);
+            }
+            return Encoding.UTF8.GetString(wholeBody);
         }
     }
 }

@@ -4,8 +4,8 @@
     <title>index</title>
     <style type="text/css">
         body {
-            background-color: #c3c3c3;
-            color: #3c3c3c;
+            background-color: #f2f2f2;
+            color: #555;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             width: 650px;
         }
@@ -18,13 +18,16 @@
         <ol>
             <li>Install nuget package: Comments</li>
             <li>Add app.UseComments(); in Startup.cs</li>
-            <li>On page where you would like to add comments add <br/>&lt;div&gt; id="comments-middleware"&lt;div&gt;</li>
-            <li>On the bottom of the body of the page where you would like to add comments add <br/> &lt;script src="/comments-middleware/loader.js"&gt;&lt;/script&gt;</li>
+            <li>On page where you would like to add comments add <br/>&lt;div id="comments-middleware"&gt;&lt;div&gt;</li>
+            <li>On the bottom of the body of the page on which you would like to add comments add <br/> &lt;script src="/comments-middleware/loader.js"&gt;&lt;/script&gt;</li>
             <li>Visit <a href="https://github.com/stanac/Comments">GitHub</a> for configuration, how to's and more info in general.</li>
             <li>Or try posting a comment below to see how it works</li>
         </ol>
     </p>
+    <a href="/page2.html"><span data-comments-url="/page2.html"></span></a>
     <div id="comments-middleware"></div>
+    <!-- setting span with [data-comments-url="/page2.html"] will load number of comments and set text inside span -->
+    
     <script src="/comments-middleware/loader.js"></script>
 </body>
 </html>
