@@ -1,9 +1,7 @@
 ﻿using Comments.Contracts;
-using Markdig;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Comments.Actions
@@ -12,12 +10,13 @@ namespace Comments.Actions
     {
         private readonly Func<IDataAccess> _dataAccessFact;
         private readonly CommentsOptions _options;
+        private readonly ICommentsConverter _mardownParser;
 
-        public PostCommentActionHandlerFactory(Func<IDataAccess> dataAccessFact, CommentsOptions options)
+        public PostCommentActionHandlerFactory(Func<IDataAccess> dataAccessFact, CommentsOptions options, ICommentsConverter mardownParser)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _dataAccessFact = dataAccessFact ?? throw new ArgumentNullException(nameof(dataAccessFact));
-
+            _mardownParser = mardownParser ?? throw new ArgumentNullException(nameof(mardownParser));
         }
 
         public ActionHandler GetActionHandler()
@@ -50,7 +49,7 @@ namespace Comments.Actions
                     comment.Approved = _options.IsUserAdminModeratorCheck(ctx); // admins don't require approval for comments
                 }
                 comment.PostedByMod = _options.IsUserAdminModeratorCheck(ctx);
-                if (comment.IsMarkdown) comment.CommentContentRendered = Markdown.ToHtml(comment.CommentContentSource);
+                if (comment.IsMarkdown) comment.CommentContentRendered = _mardownParser.ConvertToHtml(comment.CommentContentSource);
                 else comment.CommentContentRendered = comment.CommentContentSource;
                 CommentModel response = null;
                 using (var dataAccess = _dataAccessFact())

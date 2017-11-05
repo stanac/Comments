@@ -22,15 +22,16 @@ namespace Comments.Actions
             return new ActionHandler
             {
                 RequestMethod = "get",
-                RequestUrl = (_options.BaseUrl + "/admin").NormalizePath(),
+                RequestUrl = (_options.BaseUrl + "/is-admin").NormalizePath(),
                 HandleRequest = HandleRequest
             };
         }
 
         public async Task HandleRequest(HttpContext ctx)
         {
-            string response = JsonConvert.SerializeObject(_options.IsUserAdminModeratorCheck);
-            await ctx.Response.WriteResponse(response, "application/json", 200);
+            bool isAdmin = _options.IsUserAdminModeratorCheck(ctx);
+            int result = isAdmin ? 1 : 0;
+            await ctx.Response.WriteResponse(result.ToString(), "application/json", 200);
         }
     }
 }

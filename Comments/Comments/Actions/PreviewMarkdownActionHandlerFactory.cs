@@ -1,9 +1,6 @@
 ﻿using Comments.Contracts;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Comments.Actions
@@ -12,11 +9,13 @@ namespace Comments.Actions
     {
         private readonly Func<IDataAccess> _dataAccessFact;
         private readonly CommentsOptions _options;
+        private readonly ICommentsConverter _mardownParser;
 
-        public PreviewMarkdownActionHandlerFactory(Func<IDataAccess> dataAccessFact, CommentsOptions options)
+        public PreviewMarkdownActionHandlerFactory(Func<IDataAccess> dataAccessFact, CommentsOptions options, ICommentsConverter mardownParser)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _dataAccessFact = dataAccessFact ?? throw new ArgumentNullException(nameof(dataAccessFact));
+            _mardownParser = mardownParser ?? throw new ArgumentNullException(nameof(mardownParser));
 
         }
 
@@ -40,7 +39,7 @@ namespace Comments.Actions
                     await ctx.Response.WriteResponse($"Comment has exceeded maximum length of {_options.CommentSourceMaxLength} characters.", "text/plain", 400);
                     return;
                 }
-                var rendered = Markdig.Markdown.ToHtml(text);
+                var rendered = _mardownParser.ConvertToHtml(text);
                 await ctx.Response.WriteResponse(rendered, "text/html", 200);
             }
             catch (Exception ex)

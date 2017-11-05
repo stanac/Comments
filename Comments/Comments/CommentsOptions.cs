@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Markdig;
+using Microsoft.AspNetCore.Http;
 using System;
 
 namespace Comments
@@ -26,5 +27,7 @@ namespace Comments
             = false;
 #endif
         public bool DisplayPostCommentDivOnLoad { get; set; } = true;
+        public MarkdownPipeline MarkdigPipeline { get; set; }
+        
     }
 }

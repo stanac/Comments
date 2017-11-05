@@ -1,12 +1,12 @@
 ﻿(function () {
     // debugger;
 
-    var options = { baseUrl: "/comments-middleware", commentMaxLength: 600, includeHash: false, includeQuery: false, displayPostCommentOnLoad: true } // replace this, TODO
+    var options = { baseUrl: "/comments-middleware", commentMaxLength: 600, includeHash: false, includeQuery: false, displayPostCommentOnLoad: true }; // replace this, TODO
     var pageLocation = location.pathname;
     if (options.includeQuery) pageLocation += location.search || "";
     if (options.includeHash) pageLocation += location.hash || "";
 
-    var ajaxHelper = new (function () {
+    var ajaxHelper = new function () {
         var self = this;
         self.get = function (url, success) {
             var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
@@ -28,9 +28,9 @@
             xhr.send(data);
             return xhr;
         };
-    })();
+    }();
 
-    var ajax = new (function (ajaxHelper) {
+    var ajax = new function (ajaxHelper) {
         var self = this;
 
         self.getCommentsCount = function (pageUrl, success) {
@@ -58,14 +58,36 @@
             ajaxHelper.get(url, callback);
         };
 
-    })(ajaxHelper);
+        self.isAdmin = function (callback) {
+            url = options.baseUrl + '/is-admin';
+            ajaxHelper.get(url, function (result) {
+                var admin = ((+result) === 1);
+                callback(admin);
+            });
+        };
+
+        self.approve = function (commentStaticId, approve, callback) {
+            url = options.baseUrl + '/approve?approve=' + approve;
+            ajaxHelper.post(url, commentStaticId, callback);
+        };
+
+        self.deleteComment = function (commentStaticId, callback) {
+            var data = JSON.stringify({
+                StaticId: commentStaticId,
+                ReasonForDeleting: ""
+            });
+            url = options.baseUrl + '/delete';
+            ajaxHelper.post(url, data, callback);
+        };
+
+    }(ajaxHelper);
     
     function setAllCounts() {
         var allSpans = document.getElementsByTagName('span');
         for (var i = 0, n = allSpans.length; i < n; i++) {
             var span = allSpans[i];
             var attrib = allSpans[i].getAttribute('data-comments-url');
-            if (attrib != null) {
+            if (attrib !== null) {
                 ajax.getCommentsCount(attrib, function (res) {
                     span.innerText = res;
                 });
@@ -87,6 +109,9 @@
         self.email = ko.observable("");
         self.name = ko.observable("");
         self.comments = ko.observableArray([]);
+        self.isAdmin = ko.observable(false);
+
+        ajax.isAdmin(function (result) { self.isAdmin(result); });
 
         self.useMarkdown.subscribe(function () {
             if (!self.useMarkdown()) {
@@ -95,7 +120,7 @@
             self.errors.removeAll();
         });
 
-        self.togglePostCommentVisible = function() {
+        self.togglePostCommentVisible = function () {
             self.postCommentVisible(!self.postCommentVisible());
         };
 
@@ -105,10 +130,12 @@
             self.errors.removeAll();
             self.charsLeft(options.commentMaxLength - self.source().length);
         });
-        
+
         var onCommentPosted = function (result) {
             var comment = JSON.parse(result);
-            comment.ImgUrl = "http://www.gravatar.com/avatar/" + comment.EmailHash + "?size=56";
+            comment.ImgUrl = "http://www.gravatar.com/avatar/" + comment.PosterEmailHash + "?size=56&r=g";
+            comment.FormatedPostTime = new Date(comment.PostTime.replace("T", " ") + " UTC").toLocaleString();
+            comment.updated = ko.observable(false);
             self.comments.push(comment);
             loadCurrenPageCommentsCount();
             self.source('');
@@ -155,10 +182,10 @@
             validateName();
             validateEmail();
             validateText();
-            if (self.errors().length == 0) {
+            if (self.errors().length === 0) {
                 post();
             }
-        }
+        };
 
         self.togglePreview = function () {
             var isPreview = self.previewVisible();
@@ -167,13 +194,13 @@
             } else {
                 self.loading(true);
                 ajax.preview(self.source(), function (rendered) {
-                    self.rendered(rendered)
+                    self.rendered(rendered);
                     self.previewVisible(true);
                     self.loading(false);
                 });
             }
-        }
-        
+        };
+
         // display comments, TODO: maybe create a separate view/viewmodel
         self.commentsCount = ko.observable("");
         var loadCurrenPageCommentsCount = function () {
@@ -187,17 +214,40 @@
                 self.comments([]);
                 var comments = JSON.parse(json);
                 for (var i = 0; i < comments.length; i++) {
-                    comments[i].ImgUrl = "http://www.gravatar.com/avatar/" + comments[i].EmailHash + "?size=56";
+                    comments[i].ImgUrl = "http://www.gravatar.com/avatar/" + comments[i].PosterEmailHash + "?size=56&r=g";
+                    comments[i].FormatedPostTime = new Date(comments[i].PostTime.replace("T", " ") + " UTC").toLocaleString();
+                    comments[i].updated = ko.observable(false);
                 }
                 self.comments(comments);
             });
         };
+
+        self.disapproveComment = function (comment) {
+            ajax.approve(comment.StaticId, false, function () {
+                comment.updated(true);
+            });
+        };
+
+        self.approveComment = function (comment) {
+            ajax.approve(comment.StaticId, true, function () {
+                comment.updated(true);
+            });
+        };
+
+        self.deleteComment = function (comment) {
+            if (confirm("Are you sure you want to delete this comment?")) {
+                ajax.deleteComment(comment.StaticId, function () {
+                    comment.updated(true);
+                });
+            }
+        };
+
         loadAllComments();
-    }
+    };
 
     function setView() {
         var div = document.getElementById('comments-middleware');
-        if (div == null) return;
+        if (div === null) return;
 
         ajax.getView(function (result) {
             div.innerHTML = result;
@@ -212,9 +262,9 @@
         setView();
     }
 
-    document.reloadCommentsMiddlewareViewModel = function() {
+    document.reloadCommentsMiddlewareViewModel = function () {
         onReady(true);
-    }
+    };
 
     // on document loaded
     if (document.readyState !== 'loading') onReady();

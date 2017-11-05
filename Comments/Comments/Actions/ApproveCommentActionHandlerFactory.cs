@@ -1,5 +1,6 @@
 ﻿using Comments.Contracts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
@@ -36,10 +37,16 @@ namespace Comments.Actions
                     return;
                 }
                 Guid staticId = Guid.Parse(ctx.Request.ReadBodyAsString());
+                bool approve = false;
+                StringValues approveQueryValue;
+                if (ctx.Request.Query.TryGetValue("approve", out approveQueryValue))
+                {
+                    approve = bool.Parse(approveQueryValue);
+                }
                 CommentModel approvedComment = null;
                 using (var dataAccess = _dataAccessFact())
                 {
-                    approvedComment = dataAccess.ApproveComment(staticId);
+                    approvedComment = dataAccess.ApproveComment(staticId, approve);
                 }
                 string response = JsonConvert.SerializeObject(approvedComment);
                 await ctx.Response.WriteResponse(response, "application/json", 200);

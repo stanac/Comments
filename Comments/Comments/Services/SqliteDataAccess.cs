@@ -20,10 +20,14 @@ namespace Comments.Services
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
-        public IEnumerable<CommentModel> GetCommentsForPage(string pageUrl, int start, int count)
+        public IEnumerable<CommentModel> GetCommentsForPage(string pageUrl, int start, int count, bool includeNotApproved)
         {
             pageUrl = NormalizeUrl(pageUrl);
-            string sql = $"SELECT * FROM Comment WHERE PageUrl = $pageUrl ORDER BY Id ASC LIMIT {count} OFFSET {start};";
+            string sql = $"SELECT * FROM Comment WHERE PageUrl = $pageUrl AND Deleted = 0 ORDER BY Id ASC LIMIT {count} OFFSET {start};";
+            if (!includeNotApproved)
+            {
+                sql = $"SELECT * FROM Comment WHERE Approved = 1 AND PageUrl = $pageUrl AND Deleted = 0 ORDER BY Id ASC LIMIT {count} OFFSET {start};";
+            }
             var cmd = _connection.CreateCommand();
             cmd.CommandText = sql;
             var param = cmd.CreateParameter();
@@ -36,7 +40,7 @@ namespace Comments.Services
 
         public int GetCommentsCount(string pageUrl)
         {
-            string sql = "SELECT COUNT(1) FROM Comment WHERE PageUrl = $pageUrl;";
+            string sql = "SELECT COUNT(1) FROM Comment WHERE PageUrl = $pageUrl AND Deleted = 0 AND Approved = 1";
             var cmd = _connection.CreateCommand();
             cmd.CommandText = sql;
             var param = cmd.CreateParameter();
@@ -129,12 +133,12 @@ namespace Comments.Services
             return SelectCommentByStaticId(model.StaticId);
         }
 
-        public CommentModel ApproveComment(Guid staticId)
+        public CommentModel ApproveComment(Guid staticId, bool approve)
         {
             // TODO: get deleted comment content from CommentsOptions
             string staticIdValue = staticId.ToString("N");
 
-            string sql = $"UPDATE Comment SET Approved = 1 WHERE StaticId = '{staticIdValue}';";
+            string sql = $"UPDATE Comment SET Approved = {(approve ? 1 : 0)} WHERE StaticId = '{staticIdValue}';";
             var cmd = _connection.CreateCommand();
             cmd.CommandText = sql;
             if (_connection.State != ConnectionState.Open) _connection.Open();
@@ -208,6 +212,7 @@ namespace Comments.Services
                     new CommentModel
                     {
                         CommentContentRendered = reader.Get<string>("CommentContentRendered"),
+                        Approved = reader.Get<bool>("Approved"),
                         CommentContentSource = reader.Get<string>("CommentContentSource"),
                         Deleted = reader.Get<bool>("Deleted"),
                         Id = reader.Get<int>("Id"),

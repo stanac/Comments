@@ -29,12 +29,17 @@ namespace Comments
 
         public async Task Invoke(HttpContext ctx)
         {
-            var action = _actionHandlers.FirstOrDefault(x => x.ShouldHandleRequest(ctx.Request));
-            if (action != null)
+            if (ctx.Request.Path.StartsWithSegments(_options.BaseUrl))
             {
-                await action.HandleRequest(ctx);
+                var action = _actionHandlers.FirstOrDefault(x => x.ShouldHandleRequest(ctx.Request));
+                if (action != null)
+                {
+                    await action.HandleRequest(ctx);
+                    return;
+                }
             }
-            else if (_next != null)
+
+            if (_next != null)
             {
                 await _next.Invoke(ctx);
             }
@@ -42,12 +47,7 @@ namespace Comments
 
         private IEnumerable<ActionHandler> GetActions()
         {
-            yield return new CommentsCountActionHandlerFactory(_dataAccessFact, _options)
-                .GetActionHandler();
-            yield return new PostCommentActionHandlerFactory(_dataAccessFact, _options)
-                .GetActionHandler();
-            yield return new GetCommentsActionHandlerFactory(_dataAccessFact, _options)
-                .GetActionHandler();
+            var converter = new CommentsConverter(_options.MarkdigPipeline);
             List<string> knownAssets = new List<string>
             {
                 "/loader.js",
@@ -55,13 +55,22 @@ namespace Comments
                 "/comments.min.js",
                 "/view.html"
             };
+
             yield return new AssetLoadingActionHandlerFactory(_dataAccessFact, _options, knownAssets)
+                .GetActionHandler();
+            yield return new CommentsCountActionHandlerFactory(_dataAccessFact, _options)
+                .GetActionHandler();
+            yield return new PostCommentActionHandlerFactory(_dataAccessFact, _options, converter)
+                .GetActionHandler();
+            yield return new GetCommentsActionHandlerFactory(_dataAccessFact, _options)
                 .GetActionHandler();
             yield return new IsUserCommentModActionHandlerFactory(_dataAccessFact, _options)
                 .GetActionHandler();
             yield return new DeleteCommentActionHandlerFactory(_dataAccessFact, _options)
                 .GetActionHandler();
-            yield return new PreviewMarkdownActionHandlerFactory(_dataAccessFact, _options)
+            yield return new PreviewMarkdownActionHandlerFactory(_dataAccessFact, _options, converter)
+                .GetActionHandler();
+            yield return new ApproveCommentActionHandlerFactory(_dataAccessFact, _options)
                 .GetActionHandler();
         }
     }

@@ -48,7 +48,13 @@ namespace Comments.Actions
                         count = "5000";
                     }
                     string theUrl = url;
-                    var comments = _dataAccessFact().GetCommentsForPage(theUrl.NormalizePath(), int.Parse(start), int.Parse(count)).ToArray();
+                    bool includeNotApproved = _options.IsUserAdminModeratorCheck(ctx);
+                    var comments = _dataAccessFact().GetCommentsForPage(
+                        theUrl.NormalizePath(), 
+                        int.Parse(start), 
+                        int.Parse(count),
+                        includeNotApproved
+                        ).ToArray();
                     foreach (var c in comments)
                     {
                         c.CommentContentSource = "";

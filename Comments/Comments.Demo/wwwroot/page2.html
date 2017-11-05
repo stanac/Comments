@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>index</title>
+    <style type="text/css">
+        body {
+            background-color: #f2f2f2;
+            color: #555;
+            font-family: sans-serif;
+        }
+
+        #outer {
+            width: 100%;
+        }
+
+        #inner {
+            max-width: 600px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="outer">
+        <div id="inner">
+            <h2>Page 2</h2>
+            
+            <a href="/">Home page: <span data-comments-url="/"></span></a>
+            <div id="comments-middleware"></div>
+        </div>
+        <!-- setting span with [data-comments-url="/page2.html"] will load number of comments and set text inside span -->
+    </div>
+    <script src="/comments-middleware/loader.js"></script>
+</body>
+</html>
