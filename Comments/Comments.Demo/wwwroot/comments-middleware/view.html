@@ -1,31 +1,66 @@
 ﻿<div id="comments-middleware-view">
     <h4>Comments</h4>
     <div class="post-comment">
-        <label>Post comment</label><br/>
-        <input type="text" placeholder="Name" /><br />
-        <input type="email" placeholder="Email (will use gravatar)" /><br />
-        <div data-bind="visible: !loading()">
-            <textarea placeholder="comment" data-bind="visible: !previewVisible(), value: source, valueUpdate: 'keyUp'"></textarea><br />
-            <div data-bind="visible: previewVisible(), html: rendered" class="comment-preview"></div>
+        <a href="javascript: void(0);" class="post-comment-toggle" data-bind="click: togglePostCommentVisible">Post comment</a><br />
+        <div data-bind="visible: postCommentVisible">
+            <input type="text" placeholder="Name" data-bind="value: name, valueUpdate: 'keyup'" /><br />
+            <input type="email" placeholder="Email (will use gravatar)" data-bind="value: email, valueUpdate: 'keyup'" /><br />
+            <div data-bind="visible: errors().length > 0">
+                <ul data-bind="foreach: errors" class="comments-errors">
+                    <li data-bind="text: $data"></li>
+                </ul>
+            </div>
+            <div data-bind="visible: !loading()">
+                <textarea placeholder="comment" data-bind="visible: !previewVisible(), value: source, valueUpdate: 'keyup'"></textarea><br />
+                <div data-bind="visible: previewVisible(), html: rendered" class="comment-preview"></div>
+            </div>
+            <div data-bind="visible: loading()">
+                <p>Loading...</p>
+            </div>
         </div>
-        <div data-bind="visible: loading()">
-            <p>Loading...</p>
+        <div class="comments-footer" data-bind="visible: postCommentVisible">
+            <div style="float:left">
+                <p class="comment-description">
+                    <label><input type="checkbox" data-bind="checked: useMarkdown" />Use <a href="https://www.markdowntutorial.com/" target="_blank">markdown</a> to format comment.</label>
+                </p>
+                <p class="comment-description">
+                    You have <span data-bind="text: charsLeft"></span> characters left
+                </p>
+            </div>
+            <div style="float:right">
+                <span data-bind="visible: useMarkdown">
+                    <button data-bind="click: togglePreview, visible: previewVisible()">Edit</button>
+                    <button style="cursor: help;" data-bind="click: togglePreview, visible: !previewVisible()">Preview</button>
+                </span>
+                <button data-bind="click: validateAndPost">Post</button>
+            </div>
+            <div style="clear:both"></div>
         </div>
-    </div>
-    <div class="comments-footer">
-        <div style="float:left">
-            <p class="comment-description">
-                You can use <a href="http://spec.commonmark.org/0.27/" target="_blank">markdown</a> to style your comment.
-            </p>
-            <p class="comment-description">
-                You have <span data-bind="text: charsLeft"></span> characters left
-            </p>
+        <div id="comments-middleware-view-all-comments">
+            <p>Comments count: <span data-bind="text: commentsCount"></span></p>
+            <div data-bind="foreach: comments">
+                <div>
+                    <hr />
+                    <div class="floatLeft"> 
+                        <img data-bind="attr: { src: ImgUrl }" />
+                    </div>
+                    <div class="floatLeft" style="margin:20px">
+                        <span data-bind="text: PosterName"></span>
+                    </div>
+                    <div class="floatClear"></div>
+                    <!-- ko if: !IsMarkdown -->
+                    <div data-bind="text: CommentContentRendered">
+
+                    </div>
+                    <!-- /ko -->
+                    <!-- ko if: IsMarkdown -->
+                    <div data-bind="html: CommentContentRendered">
+
+                    </div>
+                    <!-- /ko -->
+                    <div class="floatClear"></div>
+                 </div>
+            </div>
         </div>
-        <div style="float:right">
-            <button data-bind="click: togglePreview, visible: previewVisible()">Edit</button>
-            <button style="cursor: help;" data-bind="click: togglePreview, visible: !previewVisible()">Preview</button>
-            <button>Post</button>
-        </div>
-        <div style="clear:both"></div>
     </div>
 </div>

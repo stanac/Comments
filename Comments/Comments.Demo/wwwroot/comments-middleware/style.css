@@ -31,8 +31,24 @@
     background-color: aliceblue;
 }
 
+#comments-middleware-view div.post-comment a.post-comment-toggle {
+    color: inherit;
+}
+
 #comments-middleware-view div.comment-preview {
     border: solid gray 1px;
     margin: 5px 0px 5px 5px;
     padding: 5px;
+}
+
+#comments-middleware-view ul.comments-errors {
+    color: #AA1111;
+}
+
+#comments-middleware-view .floatLeft {
+    float:left;
+}
+
+#comments-middleware-view .floatClear {
+    clear: both;
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Comments.Contracts
 {
@@ -19,5 +22,21 @@ namespace Comments.Contracts
         public string ReasonForDeleting { get; set; }
         public Guid StaticId { get; set; }
         public string CommentHistory { get; set; }
+        public bool IsMarkdown { get; set; }
+        
+        // not mapped data
+        public CommentModel[] ChildComments { get; set; }
+        public string ReplyToPersonName { get; set; }
+
+        public void SetEmailHash()
+        {
+            string value = PosterEmail.Trim().ToLower();
+            byte[] data = Encoding.UTF8.GetBytes(value);
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(data);
+                PosterEmailHash = string.Join("", hash.Select(c => ((int)c).ToString("X2"))).ToLower();
+            }
+        }
     }
 }

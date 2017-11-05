@@ -1,9 +1,12 @@
 ﻿(function () {
-    function onReady() {
+    function onReady(reload) {
+        reload = reload || false;
         var options = { loadJs: 'auto', middlewareRoot: '/comments-middleware', loadMinified: true, loadCss: true }; // replace this
-
+        
         function loadCss() {
+            
             if (!options.loadCss) return;
+
             var head = document.head;
             var link = document.createElement("link");
 
@@ -14,11 +17,20 @@
             head.appendChild(link)
         }
 
-        function addScriptTag(url) {
+        function addScriptTag(url, onCompleted) {
             var script = document.createElement('script'),
                 scripts = document.getElementsByTagName('script')[0];
+            script.onload = function () {
+                if (typeof onCompleted === "function") onCompleted();
+            };
             script.src = url;
             scripts.parentNode.insertBefore(script, scripts);
+        }
+
+        function loadCommentsMiddleware() {
+            var commentsSrc = options.middlewareRoot + '/comments.js';
+            if (options.loadMinified) var commentsSrc = options.middlewareRoot + '/comments.min.js';
+            addScriptTag(commentsSrc);
         }
 
         function loadKo() {
@@ -28,22 +40,29 @@
                 if (typeof ko === 'undefined') load = true;
             }
 
-            if (!load) return;
+            if (!load) return false;
             
             var cdnSrc = 'https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js';
-            addScriptTag(cdnSrc);
+            addScriptTag(cdnSrc, loadCommentsMiddleware);
+
+            return true;
         }
 
         loadCss();
-        loadKo();
-        var commentsSrc = options.middlewareRoot + '/comments.js';
-        if (options.loadMinified) var commentsSrc = options.middlewareRoot + '/comments.min.js';
-        addScriptTag(commentsSrc);
+        if (!loadKo()) loadCommentsMiddleware();
+        
+        document.reloadCommentsMiddleware = function () {
+            onReady(true);
+        };
+
+        if (reload) {
+            document.reloadCommentsMiddlewareViewModel();
+        }
     }
 
     // on document loaded
     if (document.readyState !== 'loading') onReady();
-    else if (document.addEventListener) document.addEventListener('DOMContentLoaded', onReady);
+    else if (document.addEventListener) document.addEventListener('DOMContentLoaded', function () { onReady(); });
     else document.attachEvent('onreadystatechange', function () {
         if (document.readyState === 'complete') onReady();
     });

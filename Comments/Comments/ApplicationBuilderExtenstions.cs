@@ -1,14 +1,17 @@
 ﻿using Comments;
+using System;
 
 namespace Microsoft.AspNetCore.Builder
 {
     public static class ApplicationBuilderExtenstions
     {
         public static IApplicationBuilder UseComments(this IApplicationBuilder appBuilder)
-            => UseComments(appBuilder, new CommentsOptions());
+            => UseComments(appBuilder, o => { });
 
-        public static IApplicationBuilder UseComments(this IApplicationBuilder appBuilder, CommentsOptions options)
+        public static IApplicationBuilder UseComments(this IApplicationBuilder appBuilder, Action<CommentsOptions> setOptions)
         {
+            var options = new CommentsOptions();
+            setOptions(options);
             appBuilder.UseMiddleware<CommentsMiddlware>(options);
             return appBuilder;
         }

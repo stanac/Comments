@@ -60,6 +60,13 @@
         self.previewVisible = ko.observable(false);
         self.source = ko.observable("");
         self.rendered = ko.observable("");
+        self.useMarkdown = ko.observable(false);
+
+        self.useMarkdown.subscribe(function () {
+            if (!self.useMarkdown()) {
+                self.previewVisible(false);
+            }
+        });
 
         function validateNewComment() {
             return true;

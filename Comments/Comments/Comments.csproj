@@ -1,21 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <Description>Comments as a middleware</Description>
     <PreBuildEvent></PreBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\comments.js" />
-    <None Remove="Assets\comments.min.js" />
-    <None Remove="Assets\loader.js" />
-    <None Remove="Assets\view.html" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Assets\comments.js" />
-    <EmbeddedResource Include="Assets\comments.min.js" />
   </ItemGroup>
 
   <ItemGroup>

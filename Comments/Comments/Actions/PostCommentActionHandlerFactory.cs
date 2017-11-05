@@ -25,7 +25,7 @@ namespace Comments.Actions
             return new ActionHandler
             {
                 RequestMethod = "post",
-                RequestUrl = _options.BaseUrl.NormalizePath(),
+                RequestUrl = (_options.BaseUrl + "/create").NormalizePath(),
                 HandleRequest = HandleRequest
             };
         }
@@ -35,7 +35,10 @@ namespace Comments.Actions
             try
             {
                 string json = ctx.Request.ReadBodyAsString();
-                var comment = JsonConvert.DeserializeObject<CommentModel>(json);
+                CommentModel comment = JsonConvert.DeserializeObject<CommentModel>(json);
+                comment.SetEmailHash();
+                comment.PostTime = DateTime.UtcNow;
+                comment.PageUrl = comment.PageUrl.NormalizePath();
                 if (comment.CommentContentSource.Length > _options.CommentSourceMaxLength)
                 {
                     await ctx.Response.WriteResponse($"Comment has exceeded maximum length of {_options.CommentSourceMaxLength} characters.", "text/plain", 400);
@@ -44,10 +47,11 @@ namespace Comments.Actions
                 comment.Approved = !_options.RequireCommentApproval;
                 if (!comment.Approved)
                 {
-                    comment.Approved = _options.IsUserAdminModeratorCheck(ctx); // admins don't require approval for comment
+                    comment.Approved = _options.IsUserAdminModeratorCheck(ctx); // admins don't require approval for comments
                 }
                 comment.PostedByMod = _options.IsUserAdminModeratorCheck(ctx);
-                comment.CommentContentRendered = Markdown.ToHtml(comment.CommentContentSource);
+                if (comment.IsMarkdown) comment.CommentContentRendered = Markdown.ToHtml(comment.CommentContentSource);
+                else comment.CommentContentRendered = comment.CommentContentSource;
                 CommentModel response = null;
                 using (var dataAccess = _dataAccessFact())
                 {

@@ -88,7 +88,8 @@ namespace Comments.Services
                     PostedByMod,
                     StaticId,
                     CommentHistory,
-                    Approved )
+                    Approved,
+                    IsMarkdown )
                 VALUES (
                     $PageUrl,
                     {(model.ReplayToCommentId.HasValue ? model.ReplayToCommentId.ToString() : "NULL")},
@@ -103,8 +104,9 @@ namespace Comments.Services
                     {(model.PostedByMod ? 1 : 0)},
                     '{staticId}',
                     $CommentHistory,
-                    {(model.Approved ? 1 : 0)} )
-                    ;
+                    {(model.Approved ? 1 : 0)},
+                    {(model.IsMarkdown ? 1 : 0)}
+                    );
                 ";
 
             var cmd = _connection.CreateCommand();
@@ -144,11 +146,14 @@ namespace Comments.Services
 
         public void Dispose()
         {
-            if (_connection != null && _connection.State != ConnectionState.Closed)
+            if (_connection != null)
             {
-                _connection.Close();
+                if (_connection.State != ConnectionState.Closed)
+                {
+                    _connection.Close();
+                    _connection.Dispose();
+                }
             }
-            _connection.Dispose();
         }
         
         public void Initialize()
@@ -156,6 +161,7 @@ namespace Comments.Services
             string sql = @"
                 CREATE TABLE IF NOT EXISTS Comment(
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    StaticId TEXT NOT NULL UNIQUE,
                     PageUrl TEXT NOT NULL,
                     ReplayToCommentId BIGINT,
                     PosterName TEXT NOT NULL,
@@ -168,8 +174,8 @@ namespace Comments.Services
                     ReasonForDeleting TEXT,
                     PostedByMod BIT NOT NULL,
                     CommentHistory TEXT NULL,
-                    StaticId TEXT NOT NULL UNIQUE,
-                    Approved BIT NOT NULL
+                    Approved BIT NOT NULL,
+                    IsMarkdown BIT NOT NULL
                 );
 
                 CREATE INDEX IF NOT EXISTS IX_Comment_PageUrl ON Comment(PageUrl);
@@ -214,7 +220,8 @@ namespace Comments.Services
                         ReasonForDeleting = reader.Get<string>("ReasonForDeleting"),
                         ReplayToCommentId = reader.Get<long?>("ReplayToCommentId"),
                         StaticId = Guid.Parse(reader.Get<string>("StaticId")),
-                        CommentHistory = reader.Get<string>("CommentHistory")
+                        CommentHistory = reader.Get<string>("CommentHistory"),
+                        IsMarkdown = reader.Get<bool>("IsMarkdown")
                     };
 
                 while (r.Read())

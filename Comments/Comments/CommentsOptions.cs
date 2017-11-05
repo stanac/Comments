@@ -25,5 +25,6 @@ namespace Comments
 #else
             = false;
 #endif
+        public bool DisplayPostCommentDivOnLoad { get; set; } = true;
     }
 }

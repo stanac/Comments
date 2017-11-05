@@ -24,7 +24,7 @@ namespace Comments.Actions
             return new ActionHandler
             {
                 RequestMethod = "get",
-                RequestUrl = (_options.BaseUrl + "/count").NormalizePath(),
+                RequestUrl = (_options.BaseUrl + "/all-comments").NormalizePath(),
                 HandleRequest = HandleRequest
             };
         }
@@ -45,9 +45,10 @@ namespace Comments.Actions
                     }
                     if (!ctx.Request.Query.TryGetValue("count", out count))
                     {
-                        count = "20";
+                        count = "5000";
                     }
-                    var comments = _dataAccessFact().GetCommentsForPage(url, int.Parse(start), int.Parse(count)).ToArray();
+                    string theUrl = url;
+                    var comments = _dataAccessFact().GetCommentsForPage(theUrl.NormalizePath(), int.Parse(start), int.Parse(count)).ToArray();
                     foreach (var c in comments)
                     {
                         c.CommentContentSource = "";
