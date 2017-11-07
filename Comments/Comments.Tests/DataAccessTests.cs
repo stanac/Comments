@@ -54,7 +54,7 @@ namespace Comments.Tests
                 int count = dataAccess.GetCommentsCount(model.PageUrl);
                 Assert.Equal(2, count);
 
-                var comments = dataAccess.GetCommentsForPage(model.PageUrl, 0, 5).ToArray();
+                var comments = dataAccess.GetCommentsForPage(model.PageUrl, 0, 5, true).ToArray();
                 Assert.Equal(2, comments.Length);
 
                 AssertModels(model, comments[0]);

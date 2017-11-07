@@ -83,8 +83,8 @@ namespace Comments.Actions
 
         private string SetCommentsSettings(string resource)
         {
-            string oldValue = "var baseUrl = '/comments-middleware'; // replace this";
-            string newValue = $"var baseUrl = '{_options.BaseUrl}';";
+            string oldValue = "var options = { baseUrl: \"/comments-middleware\", commentMaxLength: 600, includeHash: false, includeQuery: false, displayPostCommentOnLoad: true }; // replace this";
+            string newValue = $"var options = {{ baseUrl: \"{_options.BaseUrl}\", commentMaxLength: {_options.CommentSourceMaxLength}, includeHash: {_options.IncludeHashInUrl.ToString().ToLower()}, includeQuery: {_options.IncludeQueryInUrl.ToString().ToLower()}, displayPostCommentOnLoad: { _options.DisplayPostCommentDivOnLoad.ToString().ToLower() } }};";
             return resource.Replace(oldValue, newValue);
         }
 
@@ -94,10 +94,9 @@ namespace Comments.Actions
                 option => option == LoadJsDependenciesOptions.AutoDetect ? "auto" : option.ToString().ToLower();
 
             string loadCss = _options.LoadCss.ToString().ToLower();
-            string loadMinified = (!_options.DebugMode).ToString().ToLower();
+            // string loadMinified = (!_options.DebugMode).ToString().ToLower();
             string oldSettings = "var options = { loadJs: 'auto', middlewareRoot: '/comments-middleware', loadMinified: true, loadCss: true }; // replace this";
-            string newSettings = $"var options = {{ loadJs: '{formatJsDependencyOptions(_options.LoadJsDependencies)}', middlewareRoot: "
-                + $"'{_options.BaseUrl}', loadMinified: {loadMinified}, loadCss: {loadCss} }};";
+            string newSettings = $"var options = {{ loadJs: '{formatJsDependencyOptions(_options.LoadJsDependencies)}', middlewareRoot: '{_options.BaseUrl}', loadMinified: false, loadCss: {loadCss} }};";
             loader = loader.Replace(oldSettings, newSettings);
             return loader;
         }

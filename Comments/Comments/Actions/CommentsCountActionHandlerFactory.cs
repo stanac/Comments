@@ -37,9 +37,9 @@ namespace Comments.Actions
                 {
                     count = dataAccess.GetCommentsCount(url);
                 }
-                if (_options.CommentCountFormater != null)
+                if (_options.CommentCountFormatter != null)
                 {
-                    response = _options.CommentCountFormater(count);
+                    response = _options.CommentCountFormatter(count);
                 }
                 else
                 {

@@ -27,9 +27,9 @@
     padding: 8px;
 }
 
-#comments-middleware-view button:hover {
-    background-color: aliceblue;
-}
+    #comments-middleware-view button:hover {
+        background-color: aliceblue;
+    }
 
 #comments-middleware-view div.post-comment a.post-comment-toggle {
     color: inherit;
@@ -46,7 +46,7 @@
 }
 
 .comment-middleware-single-comment-avatar {
-    float:left;
+    float: left;
 }
 
 .comment-middleware-single-comment-poster-name {
@@ -74,5 +74,5 @@ span.comments-middleware-mod {
 }
 
 .comments-middleware-warning {
-    color:#cc2222;
+    color: #cc2222;
 }

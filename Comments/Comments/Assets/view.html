@@ -1,10 +1,83 @@
 ﻿<div id="comments-middleware-view">
     <h4>Comments</h4>
     <div class="post-comment">
-        <label>Post comment</label><br/>
-        <input type="text" placeholder="Name" /><br />
-        <input type="email" placeholder="Email (will use gravatar)" /><br />
-        <textarea placeholder="comment"></textarea><br />
-        <input type="button" value="Post"/>
+        <a href="javascript: void(0);" class="post-comment-toggle" data-bind="click: togglePostCommentVisible">Post comment</a>
+        <!-- ko if: isAdmin() -->
+        (logged in as <span class="comments-middleware-mod">mod</span>)
+        <!-- /ko -->
+        <br />
+        <div data-bind="visible: postCommentVisible">
+            <input type="text" placeholder="Name" data-bind="value: name, valueUpdate: 'keyup'" /><br />
+            <input type="email" placeholder="Email (will use gravatar)" data-bind="value: email, valueUpdate: 'keyup'" /><br />
+            <div data-bind="visible: errors().length > 0">
+                <ul data-bind="foreach: errors" class="comments-middleware-warning">
+                    <li data-bind="text: $data"></li>
+                </ul>
+            </div>
+            <div data-bind="visible: !loading()">
+                <textarea placeholder="comment" data-bind="visible: !previewVisible(), value: source, valueUpdate: 'keyup'"></textarea><br />
+                <div data-bind="visible: previewVisible(), html: rendered" class="comment-preview"></div>
+            </div>
+            <div data-bind="visible: loading()">
+                <p>Loading...</p>
+            </div>
+        </div>
+        <div class="comments-footer" data-bind="visible: postCommentVisible">
+            <div style="float:left">
+                <p class="comment-description">
+                    <label><input type="checkbox" data-bind="checked: useMarkdown" />Use <a href="https://www.markdowntutorial.com/" target="_blank">markdown</a> to format comment.</label>
+                </p>
+                <p class="comment-description">
+                    You have <span data-bind="text: charsLeft"></span> characters left
+                </p>
+            </div>
+            <div style="float:right">
+                <span data-bind="visible: useMarkdown">
+                    <button data-bind="click: togglePreview, visible: previewVisible()">Edit</button>
+                    <button style="cursor: help;" data-bind="click: togglePreview, visible: !previewVisible()">Preview</button>
+                </span>
+                <button data-bind="click: validateAndPost">Post</button>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div id="comments-middleware-view-all-comments">
+            <p>Comments count: <span data-bind="text: commentsCount"></span></p>
+            <div data-bind="foreach: comments">
+                <div data-bind="css: { 'comments-middlweare-unapproved-comment': !Approved }">
+                    <hr />
+                    <div class="comment-middleware-single-comment-avatar">
+                        <img data-bind="attr: { src: ImgUrl }" />
+                    </div>
+                    <div class="comment-middleware-single-comment-poster-name">
+                        <!-- ko if: PostedByMod -->
+                        <span class="comments-middleware-mod">mod</span>
+                        <!-- /ko -->
+                        <span data-bind="text: PosterName"></span>
+                    </div>
+                    <div class="comment-middleware-single-comment-time">
+                        <span data-bind="text: FormatedPostTime"></span>
+                    </div>
+                    <div class="floatClear"></div>
+                    <div data-bind="visible: $parent.isAdmin()">
+                        <div data-bind="visible: !updated()">
+                            <button data-bind="click: $parent.deleteComment">Delete</button>
+                            <button data-bind="click: $parent.disapproveComment, visible: Approved">Disapprove</button>
+                            <button data-bind="click: $parent.approveComment, visible: !Approved">Approve</button>
+                            <br />
+                        </div>
+                        <div data-bind="visible: updated()">
+                            <span class="comments-middleware-warning">This comment is updated/deleted, please reload page to see changes</span>
+                        </div>
+                    </div>
+                    <!-- ko if: !IsMarkdown -->
+                    <div data-bind="text: CommentContentRendered"></div>
+                    <!-- /ko -->
+                    <!-- ko if: IsMarkdown -->
+                    <div data-bind="html: CommentContentRendered"></div>
+                    <!-- /ko -->
+                    <div class="floatClear"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 
-namespace Comments
+namespace Comments.Actions
 {
     class AssetActionHandler: ActionHandler
     {

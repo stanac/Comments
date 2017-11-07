@@ -20,10 +20,10 @@ namespace Comments
         {
             _options = options ?? new CommentsOptions();
             _next = next;
-            var dataAccess = new SqliteDataAccess(options.FilePath);
+            var dataAccess = new SqliteDataAccess(options.SqliteDbFilePath);
             dataAccess.Initialize();
             dataAccess.Dispose();
-            _dataAccessFact = () => new SqliteDataAccess(options.FilePath);
+            _dataAccessFact = () => new SqliteDataAccess(options.SqliteDbFilePath);
             _actionHandlers = GetActions().ToList();
         }
 
@@ -52,8 +52,9 @@ namespace Comments
             {
                 "/loader.js",
                 "/comments.js",
-                "/comments.min.js",
-                "/view.html"
+                // "/comments.min.js",
+                "/view.html",
+                "/style.css"
             };
 
             yield return new AssetLoadingActionHandlerFactory(_dataAccessFact, _options, knownAssets)

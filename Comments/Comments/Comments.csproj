@@ -7,11 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Assets\comments.js" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\loader.js" />
+    <EmbeddedResource Include="Assets\style.css" />
     <EmbeddedResource Include="Assets\view.html" />
   </ItemGroup>
 

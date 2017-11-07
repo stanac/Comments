@@ -29,7 +29,7 @@
 
         function loadCommentsMiddleware() {
             var commentsSrc = options.middlewareRoot + '/comments.js';
-            if (options.loadMinified) var commentsSrc = options.middlewareRoot + '/comments.min.js';
+            // if (options.loadMinified) var commentsSrc = options.middlewareRoot + '/comments.min.js';
             addScriptTag(commentsSrc);
         }
 
