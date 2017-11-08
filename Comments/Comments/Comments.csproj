@@ -2,14 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <Description>Comments as a middleware</Description>
+    <Description>LiteApi is alternative WEB API for .NET Standard (1.6 and 2.0) middleware</Description>
+    <Version>0.1.0</Version>
+    <PackageProjectUrl>https://github.com/stanac/Comments</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/stanac/Comments</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>comments aspnetcore middleware</PackageTags>
+    <Authors>stanac</Authors>
+    <Company></Company>
+    <PackageLicenseUrl>https://github.com/stanac/Comments/blob/master/LICENSE</PackageLicenseUrl>
     <PreBuildEvent></PreBuildEvent>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Assets\style.css" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <EmbeddedResource Include="Assets\comments.js" />
   </ItemGroup>
