@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace Comments.Demo
 {
@@ -73,8 +75,18 @@ namespace Comments.Demo
 
             app.UseComments(o =>
             {
+                o.CommentSourceMaxLength = 1000;
                 o.IsUserAdminModeratorCheck = httpCtx => 
                     httpCtx.User.Identity.IsAuthenticated && httpCtx.User.Claims.Any(x => x.Type == "comments-admin");
+                // It's called in fire and forget manner
+#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
+                o.InformModerator = async comment =>
+#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
+                {
+                    await Task.Delay(500);
+                    Console.WriteLine($"Comment posted on {comment.PageUrl}");
+                };
+                // o.RequireCommentApproval = true;
             });
 
             app.Run(async (context) =>

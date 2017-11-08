@@ -110,6 +110,7 @@
         self.name = ko.observable("");
         self.comments = ko.observableArray([]);
         self.isAdmin = ko.observable(false);
+        self.displayRequiresApproval = ko.observable(false);
 
         ajax.isAdmin(function (result) { self.isAdmin(result); });
 
@@ -136,6 +137,9 @@
             comment.ImgUrl = "http://www.gravatar.com/avatar/" + comment.PosterEmailHash + "?size=56&r=g";
             comment.FormatedPostTime = new Date(comment.PostTime.replace("T", " ") + " UTC").toLocaleString();
             comment.updated = ko.observable(false);
+            if (!comment.Approved) {
+                self.displayRequiresApproval(true);
+            }
             self.comments.push(comment);
             loadCurrenPageCommentsCount();
             self.source('');

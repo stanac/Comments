@@ -20,10 +20,10 @@ namespace Comments
         {
             _options = options ?? new CommentsOptions();
             _next = next;
-            var dataAccess = new SqliteDataAccess(options.SqliteDbFilePath);
+            var dataAccess = new SqliteDataAccess(options);
             dataAccess.Initialize();
             dataAccess.Dispose();
-            _dataAccessFact = () => new SqliteDataAccess(options.SqliteDbFilePath);
+            _dataAccessFact = () => new SqliteDataAccess(options);
             _actionHandlers = GetActions().ToList();
         }
 

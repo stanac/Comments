@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comments", "Comments\Comments.csproj", "{47AC1AEF-C4B2-44E4-8EDE-2FEC916092F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comments.Tests", "Comments.Tests\Comments.Tests.csproj", "{2DF95D55-FCAA-4473-9DF7-F4D51F9A891D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comments.Demo", "Comments.Demo\Comments.Demo.csproj", "{454D3975-829A-42DF-935E-B8DC5BCB2AC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comments.Demo", "Comments.Demo\Comments.Demo.csproj", "{454D3975-829A-42DF-935E-B8DC5BCB2AC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B7D7CD3D-29AD-41AC-A930-3CD78A29DA74}"
+	ProjectSection(SolutionItems) = preProject
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F01845F9-98D0-4D71-8C2A-B33C5D911126}
 	EndGlobalSection
 EndGlobal

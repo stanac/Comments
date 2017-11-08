@@ -1,6 +1,8 @@
-﻿using Markdig;
+﻿using Comments.Contracts;
+using Markdig;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Threading.Tasks;
 
 namespace Comments
 {
@@ -124,5 +126,14 @@ namespace Comments
         /// The Markdig pipeline.
         /// </value>
         public MarkdownPipeline MarkdigPipeline { get; set; }
+
+        /// <summary>
+        /// Gets or sets the inform moderator function. When set, it will be called
+        /// whenever new comment is posted. If it's asynchronous it will be called in fire and forget manner.
+        /// </summary>
+        /// <value>
+        /// The inform moderator function.
+        /// </value>
+        public Action<CommentModel> InformModerator { get; set; }
     }
 }

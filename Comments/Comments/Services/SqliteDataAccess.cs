@@ -4,20 +4,23 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Comments.Services
 {
     public class SqliteDataAccess : IDataAccess, IDisposable
     {
         private readonly IDbConnection _connection;
+        private readonly CommentsOptions _options;
 
-        public SqliteDataAccess(): this("comments.sqlite") { }
+        public SqliteDataAccess(CommentsOptions options) : this(options, options.SqliteDbFilePath) { }
 
-        public SqliteDataAccess(string filePath): this(new SqliteConnection($"Data Source={filePath};")) { }
+        public SqliteDataAccess(CommentsOptions options, string filePath): this(options, new SqliteConnection($"Data Source={filePath};")) { }
 
-        public SqliteDataAccess(IDbConnection connection)
+        public SqliteDataAccess(CommentsOptions options, IDbConnection connection)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public IEnumerable<CommentModel> GetCommentsForPage(string pageUrl, int start, int count, bool includeNotApproved)
@@ -127,10 +130,14 @@ namespace Comments.Services
             cmd.ExecuteNonQuery();
 
             cmd.Dispose();
-
+            
             _connection.Close();
+            
+            model = SelectCommentByStaticId(model.StaticId);
 
-            return SelectCommentByStaticId(model.StaticId);
+            _options.InformModerator?.Invoke(model);
+
+            return model;
         }
 
         public CommentModel ApproveComment(Guid staticId, bool approve)

@@ -18,6 +18,11 @@
                 <textarea placeholder="comment" data-bind="visible: !previewVisible(), value: source, valueUpdate: 'keyup'"></textarea><br />
                 <div data-bind="visible: previewVisible(), html: rendered" class="comment-preview"></div>
             </div>
+            <div data-bind="visible: displayRequiresApproval">
+                <span class="comments-middleware-warning">
+                    Your comment is posted, however it requires moderator approval in order to be visible.
+                </span>
+            </div>
             <div data-bind="visible: loading()">
                 <p>Loading...</p>
             </div>

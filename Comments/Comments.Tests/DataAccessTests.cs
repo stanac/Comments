@@ -19,7 +19,11 @@ namespace Comments.Tests
             using (var connection = GetDb())
             {
                 file = connection.ConnectionString.Split('=')[1];
-                var dataAccess = new SqliteDataAccess(connection);
+
+                var options = new CommentsOptions();
+                file = connection.ConnectionString.Split('=')[1];
+                options.SqliteDbFilePath = file;
+                var dataAccess = new SqliteDataAccess(options);
                 dataAccess.Initialize();
                 int count = dataAccess.GetCommentsCount("/");
                 dataAccess.Dispose();
@@ -34,11 +38,15 @@ namespace Comments.Tests
             string file = null;
             using (var connection = GetDb())
             {
+                var options = new CommentsOptions();
                 file = connection.ConnectionString.Split('=')[1];
-                var dataAccess = new SqliteDataAccess(connection);
+                options.SqliteDbFilePath = file;
+                var dataAccess = new SqliteDataAccess(options);
                 dataAccess.Initialize();
 
                 var model = GetTestModel();
+                model.Deleted = false;
+                model.Approved = true;
                 var response = dataAccess.PostComment(model);
                 Assert.True(response != null && response.Id > 0);
                 AssertModels(model, response);
@@ -50,16 +58,15 @@ namespace Comments.Tests
                 var response2 = dataAccess.PostComment(model2);
                 Assert.True(response2 != null && response2.Id > 0);
                 AssertModels(model2, response2);
-
+                
                 int count = dataAccess.GetCommentsCount(model.PageUrl);
-                Assert.Equal(2, count);
+                Assert.Equal(1, count);
 
                 var comments = dataAccess.GetCommentsForPage(model.PageUrl, 0, 5, true).ToArray();
-                Assert.Equal(2, comments.Length);
+                Assert.Equal(1, comments.Length);
 
                 AssertModels(model, comments[0]);
-                AssertModels(model2, comments[1]);
-
+                
                 var deletedComment = dataAccess.DeleteComment(comments[0].StaticId, "-");
                 Assert.True(deletedComment.Deleted);
                 Assert.Equal("-", deletedComment.ReasonForDeleting);
