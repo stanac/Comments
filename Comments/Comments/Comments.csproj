@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <Description>LiteApi is alternative WEB API for .NET Standard (1.6 and 2.0) middleware</Description>
+    <Description>Comments as a middleware for ASP.NET Core apps. Adds comments capabilities to your existing ASP.NET Core app.</Description>
     <Version>0.1.0</Version>
     <PackageProjectUrl>https://github.com/stanac/Comments</PackageProjectUrl>
     <RepositoryUrl>https://github.com/stanac/Comments</RepositoryUrl>
