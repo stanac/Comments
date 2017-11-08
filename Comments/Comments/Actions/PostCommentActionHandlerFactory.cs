@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Comments.Actions
@@ -35,6 +36,7 @@ namespace Comments.Actions
             {
                 string json = ctx.Request.ReadBodyAsString();
                 CommentModel comment = JsonConvert.DeserializeObject<CommentModel>(json);
+                
                 comment.SetEmailHash();
                 comment.PostTime = DateTime.UtcNow;
                 comment.PageUrl = comment.PageUrl.NormalizePath();
@@ -49,8 +51,16 @@ namespace Comments.Actions
                     comment.Approved = _options.IsUserAdminModeratorCheck(ctx); // admins don't require approval for comments
                 }
                 comment.PostedByMod = _options.IsUserAdminModeratorCheck(ctx);
-                if (comment.IsMarkdown) comment.CommentContentRendered = _mardownParser.ConvertToHtml(comment.CommentContentSource);
-                else comment.CommentContentRendered = comment.CommentContentSource;
+                if (comment.IsMarkdown)
+                {
+                    comment.CommentContentRendered = _mardownParser.ConvertToHtml(comment.CommentContentSource);
+                }
+                else
+                {
+                    comment.CommentContentSource = WebUtility.HtmlEncode(comment.CommentContentSource);
+                    comment.CommentContentSource = comment.CommentContentSource.Replace("\n", " <br /> ");
+                    comment.CommentContentRendered = comment.CommentContentSource;
+                }
                 CommentModel response = null;
                 using (var dataAccess = _dataAccessFact())
                 {

@@ -74,12 +74,9 @@
                             <span class="comments-middleware-warning">This comment is updated/deleted, please reload page to see changes</span>
                         </div>
                     </div>
-                    <!-- ko if: !IsMarkdown -->
-                    <div data-bind="text: CommentContentRendered"></div>
-                    <!-- /ko -->
-                    <!-- ko if: IsMarkdown -->
+                    
                     <div data-bind="html: CommentContentRendered"></div>
-                    <!-- /ko -->
+                    
                     <div class="floatClear"></div>
                 </div>
             </div>
