@@ -11,15 +11,36 @@ namespace Comments.Demo
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
+            var builder = new WebHostBuilder()
                 .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .UseApplicationInsights()
-                .Build();
+                .UseContentRoot(Directory.GetCurrentDirectory());
+
+            int? port = GetPort();
+
+            if (port.HasValue)
+                builder.UseUrls("http://localhost:" + port);
+            else
+                builder.UseIISIntegration();
+
+            builder
+                .UseStartup<Startup>();
+
+            var host = builder.Build();
 
             host.Run();
+        }
+
+        private static int? GetPort()
+        {
+            if (File.Exists("port"))
+            {
+                string port = File.ReadAllText("port");
+                if (int.TryParse(port, out int parsedPort))
+                {
+                    return parsedPort;
+                }
+            }
+            return null;
         }
     }
 }
