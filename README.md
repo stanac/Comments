@@ -3,6 +3,8 @@ Easy to use Comments middleware for ASP.NET Core (compiled to netstandard1.6).
 Adds comments capability to existing ASP.NET Core applications, comments are stored
 locally in Sqlite database.
 
+**Demo:** [http://commentsdemo.stanacev.com/](http://commentsdemo.stanacev.com/)
+
 ```
 PM> Install-Package Comments
 ```
