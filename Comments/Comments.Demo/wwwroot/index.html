@@ -23,6 +23,7 @@
     <div id="outer">
         <div id="inner">
             <h2>Comments as a middleware for ASP.NET Core</h2>
+            <span></span>
             <p>
                 <h3>How-to?</h3>
                 <ol>
@@ -42,15 +43,17 @@
                 <form method="post" action="/user/logout">
                     <input type="submit" value="Fake sign out" />
                 </form>
-                <br/>
+                <br />
             </div>
-            
-            <a href="/page2.html">Page 2: <span data-comments-url="/page2.html"></span></a>
+            <span></span>
+            <a href="/page2.html">Page 2:  <span data-comments-url="/page2.html"></span></a>
+
             <div id="comments-middleware"></div>
         </div>
         <!-- setting span with [data-comments-url="/page2.html"] will load number of comments and set text inside span -->
     </div>
+    <span></span>
     <script src="/comments-middleware/loader.js"></script>
-
+    <span></span>
 </body>
 </html>

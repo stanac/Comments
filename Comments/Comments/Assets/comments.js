@@ -83,10 +83,10 @@
     }(ajaxHelper);
 
     function setAllCounts() {
-        var allSpans = document.getElementsByTagName('span');
-        for (var i = 0, n = allSpans.length; i < n; i++) {
-            var span = allSpans[i];
-            var attrib = allSpans[i].getAttribute('data-comments-url');
+        var spans = document.querySelectorAll("span[data-comments-url]");
+        for (var i = 0; i < spans.length; i++) {
+            var span = spans[i];
+            var attrib = span.getAttribute('data-comments-url');
             if (attrib !== null) {
                 ajax.getCommentsCount(attrib, function (res) {
                     span.innerText = res;
