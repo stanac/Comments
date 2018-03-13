@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <Description>Comments as a middleware for ASP.NET Core apps. Adds comments capabilities to your existing ASP.NET Core app.</Description>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <PackageProjectUrl>https://github.com/stanac/Comments</PackageProjectUrl>
     <RepositoryUrl>https://github.com/stanac/Comments</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -12,6 +12,8 @@
     <Company></Company>
     <PackageLicenseUrl>https://github.com/stanac/Comments/blob/master/LICENSE</PackageLicenseUrl>
     <PreBuildEvent></PreBuildEvent>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <FileVersion>0.2.0.0</FileVersion>
   </PropertyGroup>
   
   <ItemGroup>
